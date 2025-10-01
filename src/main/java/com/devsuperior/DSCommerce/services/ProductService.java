@@ -3,6 +3,7 @@ package com.devsuperior.DSCommerce.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devsuperior.DSCommerce.dto.ProductDTO;
 import com.devsuperior.DSCommerce.entities.Product;
 import com.devsuperior.DSCommerce.repositories.ProductRepository;
+import com.devsuperior.DSCommerce.services.exceptions.DatabaseException;
+import com.devsuperior.DSCommerce.services.exceptions.ResourceNotFoundException;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ProductService {
@@ -23,7 +28,7 @@ public class ProductService {
 	@Transactional(readOnly = true)
 	public ProductDTO findById(Long id) {
 		Optional<Product> result = repository.findById(id);
-		Product product = result.get();
+		Product product = result.orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
 		ProductDTO dto = new ProductDTO(product);
 		return dto;
 	}
@@ -47,16 +52,30 @@ public class ProductService {
 	
 	@Transactional
 	public ProductDTO update(Long id, ProductDTO dto) {
-		Product entity = repository.getReferenceById(id);
-		copyDtoToEntity(dto, entity);
-		entity = repository.save(entity);
-		return new ProductDTO(entity);
+		try {
+			Product entity = repository.getReferenceById(id);
+			copyDtoToEntity(dto, entity);
+			entity = repository.save(entity);
+			return new ProductDTO(entity);
+		}
+		catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Resource not found");
+		}
 	}
 	
 	
 	@Transactional
 	public void delete(Long id) {
-		repository.deleteById(id);
+		if (!repository.existsById(id)) {
+			throw new ResourceNotFoundException("Resource not found");
+		}
+		try {
+			repository.deleteById(id);
+			repository.flush();
+		}
+		catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Referential integrity violation");
+		}
 	}
 
 
