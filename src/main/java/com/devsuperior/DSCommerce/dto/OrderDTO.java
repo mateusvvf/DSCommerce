@@ -8,6 +8,8 @@ import com.devsuperior.DSCommerce.entities.Order;
 import com.devsuperior.DSCommerce.entities.OrderItem;
 import com.devsuperior.DSCommerce.entities.OrderStatus;
 
+import jakarta.validation.constraints.NotEmpty;
+
 public class OrderDTO {
 	
 	private Long id;
@@ -18,6 +20,7 @@ public class OrderDTO {
 	
 	private PaymentDTO payment;
 
+	@NotEmpty(message = "Deve haver pelo menos um item no carrinho")
 	private List<OrderItemDTO> items = new ArrayList<>();
 	
 	
