@@ -9,9 +9,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.devsuperior.DSCommerce.dto.CategoryDTO;
 import com.devsuperior.DSCommerce.dto.ProductDTO;
 import com.devsuperior.DSCommerce.dto.ProductMinDTO;
+import com.devsuperior.DSCommerce.entities.Category;
 import com.devsuperior.DSCommerce.entities.Product;
+import com.devsuperior.DSCommerce.repositories.CategoryRepository;
 import com.devsuperior.DSCommerce.repositories.ProductRepository;
 import com.devsuperior.DSCommerce.services.exceptions.DatabaseException;
 import com.devsuperior.DSCommerce.services.exceptions.ResourceNotFoundException;
@@ -24,6 +27,9 @@ public class ProductService {
 	
 	@Autowired
 	private ProductRepository repository;
+	
+	@Autowired
+	private CategoryRepository categoryRepository;
 	
 	
 	@Transactional(readOnly = true)
@@ -84,7 +90,13 @@ public class ProductService {
 		entity.setName(dto.getName());
 		entity.setDescription(dto.getDescription());
 		entity.setImgUrl(dto.getImgUrl());
-		entity.setPrice(dto.getPrice());		
+		entity.setPrice(dto.getPrice());
+		
+		entity.getCategories().clear();
+		for (CategoryDTO catDto : dto.getCategories()) {
+			Category cat = categoryRepository.getReferenceById(catDto.getId());
+			entity.getCategories().add(cat);
+		}
 	}
 
 }
