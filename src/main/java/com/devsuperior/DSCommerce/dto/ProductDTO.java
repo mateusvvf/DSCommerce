@@ -8,6 +8,7 @@ import com.devsuperior.DSCommerce.entities.Product;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
@@ -23,6 +24,7 @@ public class ProductDTO {
 	@NotBlank(message = "O campo precisa ser preenchido.")
 	private String description;
 	
+	@NotNull(message = "É necessário um valor")
 	@Positive(message = "O valor deve ser maior que 0.")
 	private Double price;
 	private String imgUrl;
