@@ -13,10 +13,22 @@ public class UserFactory {
 		return user;
 	}
 	
-	public static User createAdmintUser() {
+	public static User createAdminUser() {
 		User user = new User(2L, "Emmett", "emmett@gmail.com", "921102015", LocalDate.parse("1955-11-05"), "$2a$10$v.NupjjdUlrYBeuvmzki2u6TZb5H0b1xwTvq65CcZjd/jm07/NmqC");
 		user.addRole(new Role(2L, "ROLE_ADMIN"));
 		return user;
 	}
+	
+	public static User createCustomClientUser(Long id, String name, String username) {
+		User user = new User(id, name, username, "921102015", LocalDate.parse("1955-11-05"), "$2a$10$v.NupjjdUlrYBeuvmzki2u6TZb5H0b1xwTvq65CcZjd/jm07/NmqC");
+		user.addRole(new Role(1L, "ROLE_CLIENT"));
+		return user;
+	}
 
+	public static User createCustomAdminUser(Long id, String name, String username) {
+		User user = new User(id, name, username, "921102015", LocalDate.parse("1955-11-05"), "$2a$10$v.NupjjdUlrYBeuvmzki2u6TZb5H0b1xwTvq65CcZjd/jm07/NmqC");
+		user.addRole(new Role(2L, "ROLE_ADMIN"));
+		return user;
+	}
+	
 }
